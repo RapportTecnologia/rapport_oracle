@@ -38,6 +38,15 @@ fallback quando o primário falha. Tutorial completo em
 Para a checagem atrelada ao `--network` do Hardhat (mesmos mínimos), use
 `npm run check:balance:amoy` ou `npm run check:balance:polygon`.
 
+## Faucets para teste
+
+Precisa de tokens de teste para experimentar o oracle — POL na Polygon
+Amoy, SOL na devnet da Solana ou XLM na testnet da Stellar? Solicite
+diretamente
+[abrindo uma issue neste repositório](https://github.com/RapportTecnologia/rapport_oracle/issues/new?title=Solicita%C3%A7%C3%A3o%20de%20Faucet%20para%20teste&body=Rede%3A%20(ex.%3A%20Polygon%20Amoy%2C%20Solana%20devnet%2C%20Stellar%20testnet)%0AEndere%C3%A7o%20da%20carteira%3A%0AQuantidade%20estimada%3A)
+ou pela página [Crypto Faucets](https://rapport.tec.br/crypto-faucets/)
+da Rapport.
+
 ## Apoie o Projeto — Doação via Pix
 
 O Rapport Oracle é mantido de forma independente. Se o projeto é útil para

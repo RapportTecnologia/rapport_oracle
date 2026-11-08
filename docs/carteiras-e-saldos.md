@@ -31,6 +31,15 @@ Faucets Amoy: https://faucet.polygon.technology · https://www.alchemy.com/fauce
 
 Airdrop: `solana airdrop 2 <pubkey> --url devnet` (ou https://faucet.solana.com).
 
+### Programas deployados (devnet)
+
+| Item | Valor |
+|---|---|
+| `rapport_oracle` | `1pyBQW1biz9AwWGLf8hj3XepnE8TMVsmvEDZCuVQQXV` |
+| Config PDA | `Gc8Sq2gtYQyoZJdVcorM93w5ggcJXA7o3e6H8vsr25aL` |
+| `example_consumer` | `8wpztkqU6h1SX2efUqdTSxpjKiH6KGSZgMnqbVYCQ6jg` |
+| `cb_authority` | relayer, base_fee 0.001 SOL |
+
 ## Stellar (testnet)
 
 | Papel | Public Key | Fund |

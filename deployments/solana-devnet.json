@@ -1,0 +1,14 @@
+{
+  "network": "solana-devnet",
+  "deployedAt": "2026-11-08",
+  "rapportOracle": {
+    "programId": "1pyBQW1biz9AwWGLf8hj3XepnE8TMVsmvEDZCuVQQXV",
+    "configPda": "Gc8Sq2gtYQyoZJdVcorM93w5ggcJXA7o3e6H8vsr25aL",
+    "cbAuthority": "CSAVfNpCExchXhAFV3A8nyQsnnEZ2eaZuYx5ovF3e5Q2",
+    "baseFeeLamports": 1000000,
+    "initializeTx": "QHShWCsyKSBWDdCAwgWXmEhP7uPNMVx9H1VpwNgF5qd4h2zxqrQYUeBs9pyCzkN1VDo3aGAgTpdMCPFM29SAaEw"
+  },
+  "exampleConsumer": {
+    "programId": "8wpztkqU6h1SX2efUqdTSxpjKiH6KGSZgMnqbVYCQ6jg"
+  }
+}

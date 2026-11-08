@@ -1,0 +1,45 @@
+# Dependências
+node_modules/
+
+# Hardhat
+artifacts/
+cache/
+typechain-types/
+coverage/
+coverage.json
+
+# Foundry
+foundry-out/
+broadcast/
+crytic-export/
+
+# Builds Rust/Anchor/Soroban
+target/
+**/target/
+dist/
+.wasm/
+
+# Segredos e ambiente — NUNCA versionar
+.env
+.env.*
+!.env.example
+.dev.vars
+*.key
+*.pem
+keypair*.json
+*-keypair.json
+secrets/
+
+# Logs e temporários
+*.log
+logs/
+tmp/
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Deployments locais de teste
+deployments/*.local.json

@@ -1,0 +1,49 @@
+{
+  "name": "rapport-oracle-smartcontracts",
+  "version": "0.1.0",
+  "description": "Smart contracts do Rapport Oracle (EVM, Solana, Stellar) - oracle generico estilo Oraclize/Provable",
+  "private": true,
+  "license": "CC-BY-SA-4.0",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "compile": "hardhat compile",
+    "clean": "hardhat clean",
+    "test": "hardhat test",
+    "test:foundry": "forge test",
+    "test:coverage": "hardhat coverage",
+    "typechain": "hardhat typechain",
+    "deploy:oracle:amoy": "hardhat run scripts/deploy/00_deploy_oracle.ts --network polygonAmoy",
+    "deploy:oracle:polygon": "hardhat run scripts/deploy/00_deploy_oracle.ts --network polygon",
+    "deploy:example:amoy": "hardhat run scripts/deploy/01_deploy_example.ts --network polygonAmoy",
+    "deploy:example:polygon": "hardhat run scripts/deploy/01_deploy_example.ts --network polygon",
+    "deploy:safe:amoy": "hardhat run scripts/deploy/02_deploy_safe.ts --network polygonAmoy",
+    "deploy:safe:polygon": "hardhat run scripts/deploy/02_deploy_safe.ts --network polygon",
+    "transfer:ownership:amoy": "hardhat run scripts/deploy/03_transfer_ownership.ts --network polygonAmoy",
+    "check:balance:amoy": "hardhat run scripts/utils/check_balance.ts --network polygonAmoy",
+    "check:balance:polygon": "hardhat run scripts/utils/check_balance.ts --network polygon",
+    "check:balance:net": "tsx scripts/utils/query_balances.ts",
+    "verify:amoy": "hardhat verify --network polygonAmoy",
+    "audit:solhint": "solhint 'contracts/evm/**/*.sol'",
+    "audit:slither": "bash scripts/audit/slither_analyze.sh",
+    "audit:full": "npm run audit:solhint && npm run audit:slither",
+    "build:solana": "cd contracts/solana && anchor build",
+    "build:stellar": "cd contracts/stellar && cargo build --target wasm32v1-none --release"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@nomicfoundation/hardhat-verify": "^2.0.0",
+    "@types/node": "^22.10.0",
+    "hardhat": "^2.22.0",
+    "solhint": "^5.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  },
+  "dependencies": {
+    "@safe-global/protocol-kit": "^5.0.0",
+    "@safe-global/types-kit": "^3.0.0",
+    "dotenv": "^16.4.0",
+    "ethers": "^6.13.0"
+  }
+}

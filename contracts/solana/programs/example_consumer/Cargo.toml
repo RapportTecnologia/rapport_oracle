@@ -1,0 +1,21 @@
+[package]
+name = "example_consumer"
+version = "0.1.0"
+description = "Exemplo de programa consumidor do Rapport Oracle (Solana)"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "example_consumer"
+
+[features]
+default = []
+cpi = ["no-entrypoint"]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+idl-build = ["anchor-lang/idl-build"]
+
+[dependencies]
+anchor-lang = { version = "0.32.1" }
+rapport_oracle_sdk = { path = "../../lib/rapport_oracle_sdk", features = ["cpi"] }

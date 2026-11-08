@@ -1,0 +1,18 @@
+[package]
+name = "rapport_oracle_sdk"
+version = "0.1.0"
+description = "Biblioteca para programas consumidores do Rapport Oracle (Solana)"
+edition = "2021"
+
+[lib]
+crate-type = ["lib"]
+name = "rapport_oracle_sdk"
+
+[features]
+default = []
+cpi = ["dep:rapport_oracle"]
+no-entrypoint = []
+
+[dependencies]
+anchor-lang = { version = "0.32.1" }
+rapport_oracle = { path = "../../programs/rapport_oracle", features = ["cpi", "no-entrypoint"], optional = true }

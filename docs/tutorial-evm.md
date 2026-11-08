@@ -62,6 +62,9 @@ contract MeuConsumidor is usingRapportOracle {
 Redes fora da tabela: passe o conector no constructor e use
 `rapport_oracle_setConnector(addr)`.
 
+Middleware ativo: `https://rapport-oracle-midleware.consultoria-451.workers.dev`
+(`/health`, `/status`; cron de 1 minuto observando `LogNewQuery` no conector Amoy).
+
 ## 6. Helpers disponíveis
 
 `parseInt`, `parseInt(_,decimals)`, `parseAddr`, `strConcat` (2–5 args),

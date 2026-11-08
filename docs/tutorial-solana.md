@@ -60,6 +60,8 @@ anchor keys sync          # sincroniza declare_id! com keypairs em target/deploy
 solana config set --url devnet
 solana airdrop 2 <deployer>
 anchor deploy --provider.cluster devnet
+# ou o novo comando (anchor >= 1.0): anchor program deploy --program-name <nome>
+# Estado atual: deployado na devnet — ver deployments/solana-devnet.json
 ```
 
 Ver exemplo completo em `contracts/solana/programs/example_consumer`.

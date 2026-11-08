@@ -1,0 +1,15 @@
+[package]
+name = "example-consumer"
+version = "0.1.0"
+edition = "2021"
+description = "Exemplo de contrato consumidor do Rapport Oracle (Stellar/Soroban)"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+soroban-sdk = { workspace = true }
+rapport-oracle-lib = { path = "../lib/rapport-oracle" }
+
+[dev_dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }

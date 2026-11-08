@@ -1,0 +1,35 @@
+{
+  "RapportOracle": {
+    "address": "0x28A50C31D01B62d4E253058d94fE133B99451a29",
+    "cbAddress": "0xf7EEEEB7f8771C53d7E4b5488904E8B5844D2B18",
+    "deployer": "0x08faec070183cDE63BE1f62d849a091023846472",
+    "txHash": "0x5717e60a244551816163ac26f35952f19738484af83cd8d18df7a6da78c96783",
+    "block": 52325748,
+    "deployedAt": "2026-11-08T14:32:47.183Z",
+    "network": "polygonAmoy",
+    "chainId": 80002
+  },
+  "EthUsdPrice": {
+    "address": "0x74dA3fF51EfA21c6fcF81902a743541850Ae6596",
+    "connector": "0x28A50C31D01B62d4E253058d94fE133B99451a29",
+    "deployer": "0x08faec070183cDE63BE1f62d849a091023846472",
+    "txHash": "0xe451224534fe58b3b048c3ae8379f4cf8e35298185fed8aa76613f882fdfa9a0",
+    "block": 52325836,
+    "deployedAt": "2026-11-08T14:34:14.754Z"
+  },
+  "Safe": {
+    "address": "0x8Cd4C69093428Cf4F73D8eB863950bcd15EA87dD",
+    "owners": [
+      "0xd7C8D3AdC632446aC8F95f28f450Ed17adA24eee",
+      "0x7D99a66a3A3a9E965f994f8E48F7A6Aac6f9F814",
+      "0xAB2C9Ab2EE8E2220608915416A855865ECdA28FF"
+    ],
+    "threshold": 2,
+    "safeVersion": "1.4.1",
+    "txHash": "0xce8d5bf396957d54ece8d3ada17ac35d78ec5f3a3ea6fa16b9ff1d15d28f7750",
+    "block": 52326270,
+    "deployedAt": "2026-11-08T14:41:30.621Z",
+    "isOracleOwner": true,
+    "ownershipTx": "0x1dfadb8f40fa61085784eb0c356ee6ac7025e8a3d41b32997980acd1722dd5f2"
+  }
+}

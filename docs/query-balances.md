@@ -17,10 +17,12 @@ tags:
 # Tutorial — Consulta de saldos das carteiras por rede (`query_balances.ts`)
 
 O script `scripts/utils/query_balances.ts` consulta o **saldo nativo** (POL,
-ETH, etc.) das carteiras do projeto em uma ou mais redes EVM, identificadas
-por **nome amigável ou chainId**. Ele lê as carteiras do `.env`
-(deployer, relayer, signers do Safe e o próprio Safe) e também aceita
-endereços avulsos passados na linha de comando.
+SOL, ETH, etc.) das carteiras do projeto em uma ou mais redes **EVM e
+Solana**, identificadas por **nome amigável ou chainId** (EVM) / **cluster**
+(Solana). Ele lê as carteiras do `.env` (deployer, relayer, signers do Safe
+e o próprio Safe nas EVM; deployer e relayer na Solana) e também aceita
+endereços avulsos passados na linha de comando — `0x...` para EVM e
+base58 para Solana.
 
 Diferente dos scripts `check:balance:amoy` / `check:balance:polygon` — que
 rodam via `hardhat run` presos à flag `--network` — este script roda
@@ -47,17 +49,21 @@ Sempre a partir da raiz de `smartcontracts/`:
 # por nome amigável (case-insensitive, ignora espaços e pontuação)
 npx tsx scripts/utils/query_balances.ts "Polygon Amoy"
 
-# por chainId
+# por chainId (EVM)
 npx tsx scripts/utils/query_balances.ts 137
 
+# clusters Solana
+npx tsx scripts/utils/query_balances.ts solana devnet
+
 # várias redes de uma vez
-npx tsx scripts/utils/query_balances.ts "Polygon PoS" "polygon testnet"
+npx tsx scripts/utils/query_balances.ts "Polygon PoS" "polygon testnet" devnet
 
 # todas as redes conhecidas
 npx tsx scripts/utils/query_balances.ts all
 
-# carteiras do .env + um endereço avulso
+# carteiras do .env + endereços avulsos (0x para EVM, base58 para Solana)
 npx tsx scripts/utils/query_balances.ts 137 0xAbC123...
+npx tsx scripts/utils/query_balances.ts devnet 9tnKC511...
 ```
 
 Ou pelo atalho npm (o `--` repassa os argumentos ao script):
@@ -73,11 +79,22 @@ O identificador é normalizado para comparação: letras minúsculas e sem
 nenhum caractere que não seja `[a-z0-9]`. Por isso `"Polygon TestNet"`,
 `"polygon testnet"` e `"polygon-testnet"` resolvem para a mesma rede.
 
-| chainId | Rede | Moeda | Exemplos de nomes aceitos |
-|---|---|---|---|
-| 137 | Polygon PoS | POL | `polygon`, `polygon pos`, `matic`, `mainnet`, `pos` |
-| 80002 | Polygon Amoy | POL | `amoy`, `polygon amoy`, `polygon testnet`, `testnet` |
-| 31337 | Hardhat/localhost | ETH | `hardhat`, `localhost`, `local`, `dev` |
+| Id | Rede | Família | Moeda | Exemplos de nomes aceitos |
+|---|---|---|---|---|
+| 137 | Polygon PoS | EVM | POL | `polygon`, `polygon pos`, `matic`, `pos` |
+| 80002 | Polygon Amoy | EVM | POL | `amoy`, `polygon amoy`, `polygon testnet`, `testnet` |
+| 31337 | Hardhat/localhost | EVM | ETH | `hardhat`, `localhost`, `local`, `dev` |
+| devnet | Solana Devnet | Solana | SOL | `solana`, `sol`, `solana devnet`, `devnet` |
+| testnet | Solana Testnet | Solana | SOL | `solana testnet` |
+| mainnet-beta | Solana Mainnet Beta | Solana | SOL | `solana mainnet`, `mainnet beta` |
+
+> **Nota:** neste projeto `solana`/`sol` resolvem para a **devnet**, pois
+> `SOLANA_RPC_URL` aponta para ela; a mainnet é sempre explícita
+> (`solana mainnet` ou `mainnet beta`).
+
+Endereços avulsos são detectados pelo formato: `0x` + 40 hex vai para as
+redes EVM; base58 de 32-44 caracteres vai para os clusters Solana. Um
+endereço só é consultado nas redes da própria família.
 
 ### Redes genéricas por chainId
 
@@ -100,12 +117,14 @@ A lista completa de aliases aparece ao rodar o script sem argumentos
 Os endereços são lidos do `.env`, com um mínimo recomendado por papel
 (herdado da política pré-deploy do `check_balance.ts`):
 
-| Variável | Papel | Mínimo |
-|---|---|---|
-| `EVM_DEPLOYER_ADDRESS` | deploy conector + exemplo + Safe | 0.5 |
-| `EVM_RELAYER_ADDRESS` | callbacks `__callback` | 0.2 |
-| `EVM_SAFE_SIGNER_1..3_ADDRESS` | signers do Safe | 0 |
-| `EVM_SAFE_ADDRESS` | multisig Safe | 0 |
+| Variável | Família | Papel | Mínimo |
+|---|---|---|---|
+| `EVM_DEPLOYER_ADDRESS` | EVM | deploy conector + exemplo + Safe | 0.5 |
+| `EVM_RELAYER_ADDRESS` | EVM | callbacks `__callback` | 0.2 |
+| `EVM_SAFE_SIGNER_1..3_ADDRESS` | EVM | signers do Safe | 0 |
+| `EVM_SAFE_ADDRESS` | EVM | multisig Safe | 0 |
+| `SOLANA_DEPLOYER_ADDRESS` | Solana | deploy de programas/PDAs | 0.5 |
+| `SOLANA_RELAYER_ADDRESS` | Solana | callbacks | 0.2 |
 
 Variáveis não definidas aparecem como `-- não definido no .env`, sem erro.
 
@@ -116,9 +135,12 @@ que responder:
 
 1. variáveis de ambiente definidas no `.env`, na ordem da tabela
    (`POLYGON_RPC_URL`, `POLYGON_AMOY_RPC_URL`,
-   `POLYGON_AMOY_RPC_URL_FALLBACK`, `LOCALHOST_RPC_URL`, `HARDHAT_RPC_URL`);
+   `POLYGON_AMOY_RPC_URL_FALLBACK`, `LOCALHOST_RPC_URL`, `HARDHAT_RPC_URL`,
+   `SOLANA_RPC_URL`, `SOLANA_DEVNET_RPC_URL`, `SOLANA_TESTNET_RPC_URL`,
+   `SOLANA_MAINNET_RPC_URL`);
 2. endpoints públicos de fallback embutidos no script
-   (ex.: `polygon-bor-rpc.publicnode.com`, `polygon-amoy-bor-rpc.publicnode.com`).
+   (ex.: `polygon-bor-rpc.publicnode.com`, `api.devnet.solana.com`,
+   `solana-rpc.publicnode.com`).
 
 Cada tentativa gera um log `warn` estruturado; se **todos** os RPCs de uma
 rede falharem, o erro é registrado e as demais redes continuam sendo
@@ -134,8 +156,9 @@ Polygon Amoy (chainId 80002) via https://polygon-amoy.drpc.org:
 ```
 
 - `OK` — saldo ≥ mínimo do papel;
-- `FALTA` — saldo abaixo do mínimo (em testnet o script aponta as faucets
-  da Amoy ao final do bloco);
+- `FALTA` — saldo abaixo do mínimo (em redes de teste o script aponta as
+  faucets ao final do bloco — Amoy ou `faucet.solana.com`/`solana airdrop`
+  nos clusters Solana);
 - `--` — variável ausente no `.env`;
 - endereços avulsos sempre aparecem como `OK`, sem mínimo associado.
 
@@ -158,6 +181,7 @@ Polygon Amoy (chainId 80002) via https://polygon-amoy.drpc.org:
 | `401 Unauthorized` / `tenant disabled` | endpoint exige API key | configure um RPC próprio (drpc, Alchemy, Infura) no `.env` |
 | `connect ECONNREFUSED 127.0.0.1:8545` | nó local não está rodando | suba `npx hardhat node` antes de consultar `localhost` |
 | `rede não reconhecida` | nome/chainId sem alias nem `RPC_URL_<id>` | confira a tabela de aliases ou defina o RPC da chain |
+| `HTTP 429` / `RPC -32005` | rate limit do endpoint público | aguarde e repita, ou configure RPC dedicado no `.env` |
 
 ## Segurança e boas práticas
 
@@ -174,5 +198,6 @@ Polygon Amoy (chainId 80002) via https://polygon-amoy.drpc.org:
 | Data | Versão | Descrição |
 |---|---|---|
 | 2026-11-08 | 0.1.0 | Documentação inicial do `query_balances.ts` |
+| 2026-11-08 | 0.2.0 | Suporte a clusters Solana (devnet, testnet, mainnet-beta) |
 
 ![footer](https://capsule-render.vercel.app/api?type=waving&color=gradient&height=100&section=footer&animation=twinkling)

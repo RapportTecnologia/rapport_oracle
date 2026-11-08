@@ -48,6 +48,16 @@ Airdrop: `solana airdrop 2 <pubkey> --url devnet` (ou https://faucet.solana.com)
 | `EthUsdPrice` (exemplo) | `0x74dA3fF51EfA21c6fcF81902a743541850Ae6596` |
 | Safe multisig (owner) | `0x8Cd4C69093428Cf4F73D8eB863950bcd15EA87dD` |
 
+## Middleware (Cloudflare Worker)
+
+| Item | Valor |
+|---|---|
+| URL | `https://rapport-oracle-midleware.consultoria-451.workers.dev` |
+| Health | `GET /health` |
+| Status | `GET /status` |
+| Cron | `* * * * *` (poll do conector Amoy a cada minuto) |
+| Estado | MemoryKV por isolate (KV `ORACLE_STATE` pendente de provisionamento) |
+
 ## Changelog
 
 | Data | Versão | Descrição |

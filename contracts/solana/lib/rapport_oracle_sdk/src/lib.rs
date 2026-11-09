@@ -1,11 +1,16 @@
 //! Biblioteca do desenvolvedor — Rapport Oracle para Solana (modelo Oraclize/Provable).
 //!
-//! Importável via git no `Cargo.toml` do consumidor:
+//! Importável via git no `Cargo.toml` do consumidor — o Cargo localiza o
+//! crate pelo nome do pacote em qualquer subdiretório do repositório:
 //!
 //! ```toml
-//! rapport_oracle_sdk = { git = "https://github.com/rapporttecnologia/rapport_oracle",
-//!                        subdirectory = "contracts/solana/lib/rapport_oracle_sdk" }
+//! rapport_oracle_sdk = { git = "https://github.com/RapportTecnologia/rapport_oracle",
+//!                        branch = "main", features = ["cpi"] }
 //! ```
+//!
+//! Para builds reprodutíveis, substitua `branch` por `rev = "<commit>"` ou
+//! `tag = "vX.Y.Z"`. A dependência transitiva `rapport_oracle` (programa) é
+//! resolvida do mesmo repositório git automaticamente.
 //!
 //! Fluxo:
 //!   1. O consumidor chama [`rapport_oracle_query`] (CPI para o programa oracle)

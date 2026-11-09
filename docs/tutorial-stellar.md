@@ -13,9 +13,15 @@ Guia para consumir o Rapport Oracle em contratos Soroban (Stellar).
 
 ```toml
 [dependencies]
-rapport-oracle-lib = { git = "https://github.com/rapporttecnologia/rapport_oracle",
-                       subdirectory = "contracts/stellar/lib/rapport-oracle" }
+rapport-oracle-lib = { git = "https://github.com/RapportTecnologia/rapport_oracle",
+                       branch = "main" }
 ```
+
+Não existe chave `subdirectory` no Cargo: ele localiza o crate pelo **nome do
+pacote** (`rapport-oracle-lib`) em qualquer subdiretório do repositório. Para
+builds reprodutíveis, substitua `branch` por `rev = "<commit>"` ou
+`tag = "vX.Y.Z"`. Em desenvolvimento local dentro deste monorepo, a
+alternativa é `path = "contracts/stellar/lib/rapport-oracle"`.
 
 ## 2. Enviar uma query
 
@@ -76,5 +82,6 @@ completo em `contracts/stellar/example-consumer`.
 |---|---|---|
 | 2026-11-08 | 0.1.0 | Documentação inicial |
 | 2026-11-09 | 0.2.0 | Deploy do example-consumer e teste de fumaça `update()` |
+| 2026-11-09 | 0.3.0 | Dependência do exemplo via git (sem `path`); remove chave inválida `subdirectory` |
 
 ![footer](https://capsule-render.vercel.app/api?type=waving&color=gradient&height=100&section=footer&animation=twinkling)

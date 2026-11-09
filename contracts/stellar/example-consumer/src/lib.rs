@@ -4,6 +4,16 @@
 //! `json(<url>).USD` no conector e o middleware devolve o resultado no
 //! `__callback`, validado contra o `cb_address` lido do oracle.
 //!
+//! O crate `rapport-oracle-lib` é importável via git — o Cargo localiza o
+//! pacote pelo nome em qualquer subdiretório do repositório:
+//!
+//! ```toml
+//! rapport-oracle-lib = { git = "https://github.com/RapportTecnologia/rapport_oracle",
+//!                        branch = "main" }
+//! ```
+//!
+//! Para builds reprodutíveis, substitua `branch` por `rev` ou `tag`.
+//!
 //! Author:  Carlos Delfino
 //! Email:   consultoria@carlosdelfino.eti.br
 //! WhatsApp: +55 (85) 98520-5490

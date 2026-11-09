@@ -18,4 +18,9 @@ idl-build = ["anchor-lang/idl-build"]
 
 [dependencies]
 anchor-lang = { version = "0.32.1" }
-rapport_oracle_sdk = { path = "../../lib/rapport_oracle_sdk", features = ["cpi"] }
+# Consumo direto do repositório, como faria um consumidor externo: o Cargo
+# localiza o crate `rapport_oracle_sdk` pelo nome em qualquer subdiretório
+# do repo. Para reprodutibilidade, pin via `rev`/`tag` em vez de `branch`.
+# Para desenvolvimento local, use a alternativa por diretório relativo:
+# rapport_oracle_sdk = { path = "../../lib/rapport_oracle_sdk", features = ["cpi"] }
+rapport_oracle_sdk = { git = "https://github.com/RapportTecnologia/rapport_oracle", branch = "main", features = ["cpi"] }

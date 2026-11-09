@@ -15,4 +15,9 @@ no-entrypoint = []
 
 [dependencies]
 anchor-lang = { version = "0.32.1" }
-rapport_oracle = { path = "../../programs/rapport_oracle", features = ["cpi", "no-entrypoint"], optional = true }
+# Consumo direto do repositório, como faria um consumidor externo: o Cargo
+# localiza o crate `rapport_oracle` pelo nome em qualquer subdiretório do
+# repo. Para reprodutibilidade, pin via `rev`/`tag` em vez de `branch`.
+# Para desenvolvimento local, use a alternativa por diretório relativo:
+# rapport_oracle = { path = "../../programs/rapport_oracle", features = ["cpi", "no-entrypoint"], optional = true }
+rapport_oracle = { git = "https://github.com/RapportTecnologia/rapport_oracle", branch = "main", features = ["cpi", "no-entrypoint"], optional = true }

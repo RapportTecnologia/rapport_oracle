@@ -660,7 +660,7 @@ checksum = "40404c3f5f511ec4da6fe866ddf6a717c309fdbb69fbbad7b0f3edab8f2e835f"
 name = "example-consumer"
 version = "0.1.0"
 dependencies = [
- "rapport-oracle-lib",
+ "rapport-oracle-lib 0.1.0 (git+https://github.com/RapportTecnologia/rapport_oracle?branch=main)",
  "soroban-sdk",
 ]
 
@@ -1221,6 +1221,14 @@ dependencies = [
 [[package]]
 name = "rapport-oracle-lib"
 version = "0.1.0"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
+name = "rapport-oracle-lib"
+version = "0.1.0"
+source = "git+https://github.com/RapportTecnologia/rapport_oracle?branch=main#0bc3e6c66c352d7e13e85482f3e5fbab07808cfd"
 dependencies = [
  "soroban-sdk",
 ]

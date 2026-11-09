@@ -13,10 +13,17 @@ Guia para consumir o Rapport Oracle em programas Anchor (Solana).
 
 ```toml
 [dependencies]
-rapport_oracle_sdk = { git = "https://github.com/rapporttecnologia/rapport_oracle",
-                       subdirectory = "contracts/solana/lib/rapport_oracle_sdk",
-                       features = ["cpi"] }
+rapport_oracle_sdk = { git = "https://github.com/RapportTecnologia/rapport_oracle",
+                       branch = "main", features = ["cpi"] }
 ```
+
+Não existe chave `subdirectory` no Cargo: ele localiza o crate pelo **nome do
+pacote** (`rapport_oracle_sdk`) em qualquer subdiretório do repositório. A
+dependência transitiva `rapport_oracle` (o programa oracle, usada pela
+feature `cpi`) é resolvida do mesmo repositório git automaticamente. Para
+builds reprodutíveis, substitua `branch` por `rev = "<commit>"` ou
+`tag = "vX.Y.Z"`. Em desenvolvimento local dentro deste monorepo, a
+alternativa é `path = "contracts/solana/lib/rapport_oracle_sdk"`.
 
 ## 2. Enviar uma query (CPI)
 
@@ -71,5 +78,6 @@ Ver exemplo completo em `contracts/solana/programs/example_consumer`.
 | Data | Versão | Descrição |
 |---|---|---|
 | 2026-11-08 | 0.1.0 | Documentação inicial |
+| 2026-11-09 | 0.2.0 | Dependência do exemplo via git (sem `path`); remove chave inválida `subdirectory` |
 
 ![footer](https://capsule-render.vercel.app/api?type=waving&color=gradient&height=100&section=footer&animation=twinkling)

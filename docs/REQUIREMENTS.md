@@ -22,8 +22,10 @@ Fonte viva de requisitos do subprojeto `smartcontracts`.
 | REQ-LIB-03 | `__callback` exige `msg.sender == rapport_oracle_cbAddress()` | ✅ | exemplos testados |
 | REQ-SOL-01 | Programa Anchor `rapport_oracle` com `query` → PDA + evento | ✅ | `anchor build` |
 | REQ-SOL-02 | SDK `rapport_oracle_sdk` com `require_cb_authority` + parse | ✅ | idem |
+| REQ-SOL-03 | `rapport_oracle_sdk` e `rapport_oracle` importáveis via git (Cargo descobre crate por nome no repo) | ✅ | deps `git` nos `Cargo.toml` + `cargo fetch` |
 | REQ-XLM-01 | Contrato Soroban `rapport-oracle` com `query` → `BytesN<32>` + evento | ✅ | `cargo build wasm32v1-none` |
 | REQ-XLM-02 | Crate `rapport-oracle-lib` com `require_cb_address` + parse | ✅ | idem |
+| REQ-XLM-03 | Crate `rapport-oracle-lib` importável via git | ✅ | idem |
 | REQ-DEP-01 | Deploy Amoy + Safe 2-de-3 + transferência de ownership | ✅ | `deployments/polygonAmoy.json` |
 | REQ-DEP-02 | Deploy Solana devnet + Stellar testnet prontos para teste | ⏳ | scripts/documentados |
 | REQ-OPS-01 | Consulta de saldos multi-chain (EVM, Solana, Stellar/Horizon) e faucet Stellar via Friendbot | ✅ | `npm run check:balance:net`, `npm run faucet:stellar` |
@@ -43,5 +45,6 @@ Fonte viva de requisitos do subprojeto `smartcontracts`.
 |---|---|---|
 | 2026-11-08 | 0.1.0 | Requisitos iniciais |
 | 2026-11-09 | 0.2.0 | REQ-OPS-01: saldos multi-chain + Friendbot Stellar |
+| 2026-11-09 | 0.3.0 | REQ-SOL-03/REQ-XLM-03: crates Rust importáveis via git nos exemplos |
 
 ![footer](https://capsule-render.vercel.app/api?type=waving&color=gradient&height=100&section=footer&animation=twinkling)

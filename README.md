@@ -17,26 +17,35 @@ Em construção — consulte `docs/` para tutoriais e documentação.
 
 `scripts/utils/query_balances.ts` consulta o saldo nativo das carteiras do
 `.env` (deployer, relayer, signers e Safe nas EVM; deployer e relayer na
-Solana) em uma ou mais redes, identificadas por nome amigável ou chainId
-(EVM) / cluster (Solana):
+Solana e na Stellar) em uma ou mais redes, identificadas por nome amigável
+ou chainId (EVM) / cluster (Solana) / network (Stellar):
 
 ```bash
 npm run check:balance:net -- "Polygon Amoy"
 npm run check:balance:net -- "Polygon PoS"        # ou 137
 npm run check:balance:net -- solana devnet
-npm run check:balance:net -- "polygon testnet" 0xAbC... 9tnK...
+npm run check:balance:net -- stellar              # ou "stellar testnet", "xlm"
+npm run check:balance:net -- "polygon testnet" 0xAbC... 9tnK... GABC...
 npm run check:balance:net -- all                  # todas as redes conhecidas
 ```
 
 Redes conhecidas: Polygon PoS (137), Polygon Amoy (80002), Hardhat/localhost
-(31337), Solana Devnet, Solana Testnet e Solana Mainnet Beta. Outras chains
-EVM podem ser consultadas pelo chainId definindo `RPC_URL_<chainId>` no
-`.env`. O script tenta cada RPC configurado e cai para endpoints públicos de
-fallback quando o primário falha. Tutorial completo em
+(31337), Solana Devnet, Solana Testnet, Solana Mainnet Beta, Stellar
+Testnet, Stellar Futurenet e Stellar Pubnet. Outras chains EVM podem ser
+consultadas pelo chainId definindo `RPC_URL_<chainId>` no `.env`. O script
+tenta cada RPC/Horizon configurado e cai para endpoints públicos de fallback
+quando o primário falha. Tutorial completo em
 [`docs/query-balances.md`](docs/query-balances.md).
 
 Para a checagem atrelada ao `--network` do Hardhat (mesmos mínimos), use
 `npm run check:balance:amoy` ou `npm run check:balance:polygon`.
+
+### Faucet Stellar (Friendbot)
+
+`npm run faucet:stellar` financia as contas `STELLAR_*_ADDRESS` do `.env` na
+testnet via Friendbot (cria a conta com 10 000 XLM quando ela ainda não
+existe). Use `npm run faucet:stellar -- futurenet` para a futurenet; a
+pubnet não possui Friendbot.
 
 ## Faucets para teste
 
@@ -83,5 +92,6 @@ O QR Code é gerado por `scripts/generate_pix_qrcode.py` (raiz do monorepo).
 | 2026-11-08 | 0.1.1 | Script `query_balances.ts` para saldos por nome/chainId de rede |
 | 2026-11-08 | 0.1.2 | `query_balances.ts` passa a cobrir Solana (devnet, testnet, mainnet-beta) |
 | 2026-11-08 | 0.1.2 | Seção de doação via Pix com QR Code |
+| 2026-11-09 | 0.1.3 | `query_balances.ts` passa a cobrir Stellar (testnet, futurenet, pubnet) e script `stellar_friendbot.ts` (`npm run faucet:stellar`) |
 
 ![footer](https://capsule-render.vercel.app/api?type=waving&color=gradient&height=100&section=footer&animation=twinkling)

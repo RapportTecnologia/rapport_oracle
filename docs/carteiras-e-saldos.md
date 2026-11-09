@@ -47,7 +47,8 @@ Airdrop: `solana airdrop 2 <pubkey> --url devnet` (ou https://faucet.solana.com)
 | Deployer | `GDEMEVDF44QG4566MT4IEOMWMBPMOND52JKYN7TBYS75QBLGUVTVJXFD` | Friendbot ✅ |
 | Relayer (`cb_address`) | `GCV3T3N5XDKFI2QAXZRSTUFLJPIUJWDTRZJMPSI5OMPS6DRHL6PILTQ6` | Friendbot ✅ |
 
-`stellar keys fund <identidade> --network testnet` cobre automaticamente.
+`stellar keys fund <identidade> --network testnet` cobre automaticamente,
+ou `npm run faucet:stellar` (Friendbot direto via HTTP, sem CLI Stellar).
 
 ## Endereços on-chain (Amoy, block ~52.3M)
 

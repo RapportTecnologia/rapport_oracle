@@ -26,6 +26,7 @@ Fonte viva de requisitos do subprojeto `smartcontracts`.
 | REQ-XLM-02 | Crate `rapport-oracle-lib` com `require_cb_address` + parse | ✅ | idem |
 | REQ-DEP-01 | Deploy Amoy + Safe 2-de-3 + transferência de ownership | ✅ | `deployments/polygonAmoy.json` |
 | REQ-DEP-02 | Deploy Solana devnet + Stellar testnet prontos para teste | ⏳ | scripts/documentados |
+| REQ-OPS-01 | Consulta de saldos multi-chain (EVM, Solana, Stellar/Horizon) e faucet Stellar via Friendbot | ✅ | `npm run check:balance:net`, `npm run faucet:stellar` |
 
 ## Requisitos não funcionais
 
@@ -41,5 +42,6 @@ Fonte viva de requisitos do subprojeto `smartcontracts`.
 | Data | Versão | Descrição |
 |---|---|---|
 | 2026-11-08 | 0.1.0 | Requisitos iniciais |
+| 2026-11-09 | 0.2.0 | REQ-OPS-01: saldos multi-chain + Friendbot Stellar |
 
 ![footer](https://capsule-render.vercel.app/api?type=waving&color=gradient&height=100&section=footer&animation=twinkling)

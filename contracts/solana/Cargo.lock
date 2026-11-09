@@ -479,7 +479,7 @@ name = "example_consumer"
 version = "0.1.0"
 dependencies = [
  "anchor-lang",
- "rapport_oracle_sdk",
+ "rapport_oracle_sdk 0.1.0 (git+https://github.com/RapportTecnologia/rapport_oracle?branch=main)",
 ]
 
 [[package]]
@@ -744,11 +744,29 @@ dependencies = [
 ]
 
 [[package]]
+name = "rapport_oracle"
+version = "0.1.0"
+source = "git+https://github.com/RapportTecnologia/rapport_oracle?branch=main#0bc3e6c66c352d7e13e85482f3e5fbab07808cfd"
+dependencies = [
+ "anchor-lang",
+ "sha2",
+]
+
+[[package]]
 name = "rapport_oracle_sdk"
 version = "0.1.0"
 dependencies = [
  "anchor-lang",
- "rapport_oracle",
+ "rapport_oracle 0.1.0 (git+https://github.com/RapportTecnologia/rapport_oracle?branch=main)",
+]
+
+[[package]]
+name = "rapport_oracle_sdk"
+version = "0.1.0"
+source = "git+https://github.com/RapportTecnologia/rapport_oracle?branch=main#0bc3e6c66c352d7e13e85482f3e5fbab07808cfd"
+dependencies = [
+ "anchor-lang",
+ "rapport_oracle 0.1.0 (git+https://github.com/RapportTecnologia/rapport_oracle?branch=main)",
 ]
 
 [[package]]

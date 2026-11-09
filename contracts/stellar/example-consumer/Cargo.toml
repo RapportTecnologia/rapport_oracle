@@ -9,7 +9,12 @@ crate-type = ["cdylib"]
 
 [dependencies]
 soroban-sdk = { workspace = true }
-rapport-oracle-lib = { path = "../lib/rapport-oracle" }
+# Consumo direto do repositório, como faria um consumidor externo: o Cargo
+# localiza o crate `rapport-oracle-lib` pelo nome em qualquer subdiretório
+# do repo. Para reprodutibilidade, pin via `rev`/`tag` em vez de `branch`.
+# Para desenvolvimento local, use a alternativa por diretório relativo:
+# rapport-oracle-lib = { path = "../lib/rapport-oracle" }
+rapport-oracle-lib = { git = "https://github.com/RapportTecnologia/rapport_oracle", branch = "main" }
 
 [dev_dependencies]
 soroban-sdk = { workspace = true, features = ["testutils"] }

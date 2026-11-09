@@ -24,6 +24,7 @@
     "check:balance:amoy": "hardhat run scripts/utils/check_balance.ts --network polygonAmoy",
     "check:balance:polygon": "hardhat run scripts/utils/check_balance.ts --network polygon",
     "check:balance:net": "tsx scripts/utils/query_balances.ts",
+    "faucet:stellar": "tsx scripts/utils/stellar_friendbot.ts",
     "verify:amoy": "hardhat verify --network polygonAmoy",
     "audit:solhint": "solhint 'contracts/evm/**/*.sol'",
     "audit:slither": "bash scripts/audit/slither_analyze.sh",

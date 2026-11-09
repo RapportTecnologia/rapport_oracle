@@ -1,22 +1,27 @@
 /**
- * Consulta de saldos das carteiras do projeto em redes EVM e Solana.
+ * Consulta de saldos das carteiras do projeto em redes EVM, Solana e Stellar.
  *
  * @file Resolve a rede a partir de nome amigável ou id (ex.: "Polygon PoS",
- *       137, "Polygon Amoy", "Polygon testnet", "solana", "devnet") e
- *       consulta o saldo nativo das carteiras definidas no .env
- *       (EVM_*_ADDRESS / SOLANA_*_ADDRESS) e de endereços extras passados
- *       na linha de comando (0x... para EVM, base58 para Solana).
+ *       137, "Polygon Amoy", "Polygon testnet", "solana", "devnet",
+ *       "stellar", "futurenet") e consulta o saldo nativo das carteiras
+ *       definidas no .env (EVM_*_ADDRESS / SOLANA_*_ADDRESS /
+ *       STELLAR_*_ADDRESS) e de endereços extras passados na linha de
+ *       comando (0x... para EVM, base58 para Solana, G... para Stellar).
  *
  *       Executado via tsx e não via `hardhat run`, porque o Hardhat não
  *       aceita argumentos posicionais extras após o caminho do script.
  *       Solana é consultada por JSON-RPC puro (fetch), sem dependência de
- *       @solana/web3.js.
+ *       @solana/web3.js. Stellar é consultada pela API REST do Horizon
+ *       (sem @stellar/stellar-sdk): conta inexistente (HTTP 404) é
+ *       reportada como saldo zero — na testnet/futurenet ela é criada e
+ *       financiada pelo Friendbot (ver `stellar_friendbot.ts`).
  *
  * Uso:
  *   npx tsx scripts/utils/query_balances.ts "Polygon Amoy"
  *   npx tsx scripts/utils/query_balances.ts 137
  *   npx tsx scripts/utils/query_balances.ts solana devnet
- *   npx tsx scripts/utils/query_balances.ts "polygon testnet" 0xAbC... 9tnK...
+ *   npx tsx scripts/utils/query_balances.ts stellar
+ *   npx tsx scripts/utils/query_balances.ts "polygon testnet" 0xAbC... 9tnK... GABC...
  *   npx tsx scripts/utils/query_balances.ts all
  *   npm run check:balance:net -- "Polygon PoS"
  *
@@ -38,27 +43,27 @@ import { join } from "path";
 dotenv.config({ path: join(__dirname, "..", "..", ".env") });
 
 /** Família de chain suportada — define formato de endereço e RPC. */
-type ChainKind = "evm" | "solana";
+type ChainKind = "evm" | "solana" | "stellar";
 
 /** Definição de uma rede consultável. */
 interface NetworkDef {
-  /** Família da chain: "evm" (ethers/chainId) ou "solana" (JSON-RPC/cluster). */
+  /** Família da chain: "evm" (ethers/chainId), "solana" (JSON-RPC/cluster) ou "stellar" (Horizon REST). */
   kind: ChainKind;
   /** chainId numérico — apenas EVM; usado também para validar o RPC. */
   chainId?: number;
-  /** Nome do cluster — apenas Solana (ex.: "devnet", "mainnet-beta"). */
+  /** Nome do cluster (Solana: "devnet", "mainnet-beta") ou da network Stellar ("testnet", "futurenet", "pubnet"). */
   cluster?: string;
-  /** Nome de exibição (ex.: "Polygon PoS", "Solana Devnet"). */
+  /** Nome de exibição (ex.: "Polygon PoS", "Solana Devnet", "Stellar Testnet"). */
   name: string;
   /** Símbolo da moeda nativa; vazio quando desconhecido (rede genérica). */
   currency: string;
-  /** Decimais da moeda nativa (18 EVM, 9 Solana). */
+  /** Decimais da moeda nativa (18 EVM, 9 Solana, 7 Stellar). */
   decimals: number;
   /** Dica de faucet exibida quando alguma carteira fica abaixo do mínimo. */
   faucetHint?: string;
-  /** Variáveis de ambiente com RPC, em ordem de prioridade. */
+  /** Variáveis de ambiente com RPC/Horizon, em ordem de prioridade. */
   rpcEnvKeys: string[];
-  /** RPCs públicos tentados quando nenhuma variável de ambiente está definida. */
+  /** Endpoints públicos tentados quando nenhuma variável de ambiente está definida. */
   defaultRpcs: string[];
   /** Apelidos normalizados (lowercase, apenas [a-z0-9]) que resolvem a rede. */
   aliases: string[];
@@ -149,6 +154,43 @@ const NETWORKS: NetworkDef[] = [
     ],
     aliases: ["solanamainnet", "solanamainnetbeta", "mainnetbeta"],
   },
+  {
+    kind: "stellar",
+    cluster: "testnet",
+    name: "Stellar Testnet",
+    currency: "XLM",
+    decimals: 7,
+    faucetHint:
+      "Faucet testnet: npm run faucet:stellar | https://friendbot.stellar.org/?addr=<G...>",
+    rpcEnvKeys: ["STELLAR_HORIZON_URL", "STELLAR_TESTNET_HORIZON_URL"],
+    defaultRpcs: ["https://horizon-testnet.stellar.org"],
+    aliases: ["stellar", "xlm", "stellartestnet", "testnetstellar"],
+  },
+  {
+    kind: "stellar",
+    cluster: "futurenet",
+    name: "Stellar Futurenet",
+    currency: "XLM",
+    decimals: 7,
+    faucetHint:
+      "Faucet futurenet: npm run faucet:stellar -- futurenet | https://friendbot-futurenet.stellar.org/?addr=<G...>",
+    rpcEnvKeys: ["STELLAR_FUTURENET_HORIZON_URL"],
+    defaultRpcs: ["https://horizon-futurenet.stellar.org"],
+    aliases: ["futurenet", "stellarfuturenet", "futurenetstellar"],
+  },
+  {
+    kind: "stellar",
+    cluster: "pubnet",
+    name: "Stellar Pubnet",
+    currency: "XLM",
+    decimals: 7,
+    rpcEnvKeys: ["STELLAR_PUBNET_HORIZON_URL", "STELLAR_MAINNET_HORIZON_URL"],
+    defaultRpcs: ["https://horizon.stellar.org"],
+    aliases: [
+      "pubnet", "stellarmainnet", "stellarpubnet", "stellarpublic",
+      "stellarpublicnetwork", "pubnetstellar",
+    ],
+  },
 ];
 
 /** Carteiras do projeto lidas do .env por família, com mínimo por papel. */
@@ -165,15 +207,23 @@ const WALLETS: Record<ChainKind, Array<{ key: string; min: string; role: string 
     { key: "SOLANA_DEPLOYER_ADDRESS", min: "0.5", role: "deployer (programas/PDAs)" },
     { key: "SOLANA_RELAYER_ADDRESS", min: "0.2", role: "relayer (callbacks)" },
   ],
+  stellar: [
+    { key: "STELLAR_DEPLOYER_ADDRESS", min: "5", role: "deployer (contratos Soroban)" },
+    { key: "STELLAR_RELAYER_ADDRESS", min: "2", role: "relayer (callbacks)" },
+  ],
 };
 
 /** Endereço Solana em base58 (32-44 chars, sem 0/O/I/l). */
 const SOLANA_ADDRESS_RE = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 
+/** Public key Stellar em StrKey base32: "G" + 55 chars do alfabeto A-Z2-7. */
+const STELLAR_ADDRESS_RE = /^G[A-Z2-7]{55}$/;
+
 /** Endereços avulsos separados por família de chain. */
 interface ExtraAddresses {
   evm: string[];
   solana: string[];
+  stellar: string[];
 }
 
 function log(level: string, scope: string, msg: string, params: Record<string, unknown> = {}) {
@@ -233,9 +283,10 @@ function rpcCandidates(net: NetworkDef): string[] {
   return urls;
 }
 
-/** Rótulo da rede para o relatório: "chainId 137" (EVM) ou "cluster devnet" (Solana). */
+/** Rótulo da rede para o relatório: "chainId 137" (EVM), "cluster devnet" (Solana) ou "network testnet" (Stellar). */
 function netLabel(net: NetworkDef): string {
-  return net.kind === "evm" ? `chainId ${net.chainId}` : `cluster ${net.cluster}`;
+  if (net.kind === "evm") return `chainId ${net.chainId}`;
+  return net.kind === "solana" ? `cluster ${net.cluster}` : `network ${net.cluster}`;
 }
 
 /**
@@ -266,6 +317,35 @@ async function solanaBalanceLamports(rpcUrl: string, address: string): Promise<b
 }
 
 /**
+ * Health check de um servidor Horizon (endpoint raiz).
+ *
+ * @param horizonUrl - URL base do Horizon (ex.: "https://horizon-testnet.stellar.org").
+ * @throws Error quando o servidor responde status não-2xx ou falha de rede.
+ */
+async function stellarHorizonRoot(horizonUrl: string): Promise<void> {
+  const res = await fetch(horizonUrl);
+  if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+}
+
+/**
+ * Saldo nativo (XLM) de uma conta Stellar em stroops (inteiro).
+ *
+ * @param horizonUrl - URL base do Horizon.
+ * @param address - Public key da conta (StrKey "G...").
+ * @returns Saldo em stroops; 0 quando a conta não existe (HTTP 404), pois
+ *          contas Stellar só passam a existir após o primeiro funding.
+ * @throws Error em falha de rede ou resposta Horizon inesperada.
+ */
+async function stellarBalanceStroops(horizonUrl: string, address: string): Promise<bigint> {
+  const res = await fetch(`${horizonUrl}/accounts/${address}`);
+  if (res.status === 404) return 0n;
+  if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+  const json = (await res.json()) as { balances?: Array<{ asset_type: string; balance: string }> };
+  const native = json.balances?.find((b) => b.asset_type === "native");
+  return parseUnits(native?.balance ?? "0", 7);
+}
+
+/**
  * Consulta os saldos das carteiras em uma rede, tentando cada RPC candidato.
  *
  * @param net - Rede resolvida.
@@ -280,6 +360,10 @@ async function queryNetwork(net: NetworkDef, extras: ExtraAddresses): Promise<bo
         await solanaRpc(url, "getVersion");
         const getBalance = (addr: string) => solanaBalanceLamports(url, addr);
         await reportBalances(net, url, getBalance, extras.solana);
+      } else if (net.kind === "stellar") {
+        await stellarHorizonRoot(url);
+        const getBalance = (addr: string) => stellarBalanceStroops(url, addr);
+        await reportBalances(net, url, getBalance, extras.stellar);
       } else {
         const provider = new JsonRpcProvider(url, net.chainId, { staticNetwork: true });
         await provider.getBlockNumber();
@@ -348,9 +432,11 @@ Exemplos:
   npx tsx scripts/utils/query_balances.ts "Polygon Amoy"
   npx tsx scripts/utils/query_balances.ts 137
   npx tsx scripts/utils/query_balances.ts solana devnet
-  npx tsx scripts/utils/query_balances.ts "polygon testnet" 0xAbC... 9tnK...
+  npx tsx scripts/utils/query_balances.ts stellar
+  npx tsx scripts/utils/query_balances.ts "polygon testnet" 0xAbC... 9tnK... GABC...
 
-Endereços avulsos são detectados pelo formato: 0x... (EVM) ou base58 (Solana).
+Endereços avulsos são detectados pelo formato: 0x... (EVM), base58 (Solana)
+ou G... (Stellar).
 
 Redes conhecidas:`);
   for (const n of NETWORKS) {
@@ -363,9 +449,10 @@ Redes conhecidas:`);
 /** Separa argumentos posicionais em identificadores de rede e endereços por família. */
 function parseArgs(argv: string[]): { inputs: string[]; extras: ExtraAddresses } {
   const inputs: string[] = [];
-  const extras: ExtraAddresses = { evm: [], solana: [] };
+  const extras: ExtraAddresses = { evm: [], solana: [], stellar: [] };
   for (const arg of argv) {
     if (isAddress(arg)) extras.evm.push(arg);
+    else if (STELLAR_ADDRESS_RE.test(arg)) extras.stellar.push(arg);
     else if (SOLANA_ADDRESS_RE.test(arg)) extras.solana.push(arg);
     else inputs.push(arg);
   }
@@ -374,7 +461,7 @@ function parseArgs(argv: string[]): { inputs: string[]; extras: ExtraAddresses }
 
 async function main(): Promise<void> {
   const { inputs, extras } = parseArgs(process.argv.slice(2));
-  if (inputs.length === 0 && extras.evm.length === 0 && extras.solana.length === 0) {
+  if (inputs.length === 0 && extras.evm.length === 0 && extras.solana.length === 0 && extras.stellar.length === 0) {
     printUsage();
     process.exitCode = 1;
     return;
@@ -401,6 +488,7 @@ async function main(): Promise<void> {
   if (targets.length === 0) {
     if (extras.evm.length > 0) targets.push(NETWORKS[0]);
     if (extras.solana.length > 0) targets.push(NETWORKS.find((n) => n.kind === "solana")!);
+    if (extras.stellar.length > 0) targets.push(NETWORKS.find((n) => n.kind === "stellar")!);
   }
 
   let failures = 0;

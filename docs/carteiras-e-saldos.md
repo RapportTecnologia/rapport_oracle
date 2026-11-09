@@ -50,6 +50,17 @@ Airdrop: `solana airdrop 2 <pubkey> --url devnet` (ou https://faucet.solana.com)
 `stellar keys fund <identidade> --network testnet` cobre automaticamente,
 ou `npm run faucet:stellar` (Friendbot direto via HTTP, sem CLI Stellar).
 
+### Contratos deployados (testnet)
+
+| Item | Valor |
+|---|---|
+| `rapport-oracle` (conector) | `CBEANZNVJMLLKABTNTUFAAA42ABMHQCESQ42ZHOT64LNULYDB3I3ZBVJ` |
+| `example-consumer` (exemplo) | `CDISNVVCVE2AW6G5BKK74ZAO4LSIHA3BHHCSUOR372OXBLPAPWV7TUC6` |
+| `cb_address` | relayer, inicializado no conector |
+
+Registro completo (wasm hash, tx de deploy/init) em
+`deployments/stellar-testnet.json`.
+
 ## Endereços on-chain (Amoy, block ~52.3M)
 
 | Contrato | Endereço |

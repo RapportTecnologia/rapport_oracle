@@ -53,15 +53,28 @@ stellar contract invoke --id <CONTRACT_ID> --source rapport-deployer --network t
     initialize --admin <ADMIN> --cb_address <RELAYER>
 ```
 
+Deploy do exemplo consumidor apontando para o conector e teste de fumaça:
+
+```bash
+stellar contract deploy --wasm target/wasm32v1-none/release/example_consumer.wasm \
+    --source rapport-deployer --network testnet
+stellar contract invoke --id <CONSUMER_ID> --source rapport-deployer --network testnet -- \
+    initialize --admin <ADMIN> --oracle_addr <ORACLE_CONTRACT_ID>
+stellar contract invoke --id <CONSUMER_ID> --source rapport-deployer --network testnet -- \
+    update   # retorna o rqid e emite o evento "query" no conector
+```
+
 Financiar contas de teste: `stellar keys fund <identidade> --network testnet`
 (Friendbot automático).
 
-Ver exemplo completo em `contracts/stellar/example-consumer`.
+Deploys registrados em `deployments/stellar-testnet.json`. Ver exemplo
+completo em `contracts/stellar/example-consumer`.
 
 ## Changelog
 
 | Data | Versão | Descrição |
 |---|---|---|
 | 2026-11-08 | 0.1.0 | Documentação inicial |
+| 2026-11-09 | 0.2.0 | Deploy do example-consumer e teste de fumaça `update()` |
 
 ![footer](https://capsule-render.vercel.app/api?type=waving&color=gradient&height=100&section=footer&animation=twinkling)
